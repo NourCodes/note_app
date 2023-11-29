@@ -1,16 +1,24 @@
 import 'package:flutter/cupertino.dart';
+import 'package:note_app/data/hive_Db.dart';
 
 import 'note.dart';
 
 class NoteData extends ChangeNotifier {
+  //hive database
+  final db = HiveDB();
+
   //list of notes
   List<Note> notes = [
-    Note(text: " note", Title: "first note"),
   ];
+  void initializeNotes(){
+    notes =db.loadNote();
+  }
+
 
   //add a new note
   void addNote(Note note) {
     notes.add(note);
+    db.saveNote(notes);
     notifyListeners();
   }
 
@@ -28,6 +36,7 @@ class NoteData extends ChangeNotifier {
         notes[i].Title = title;
         notes[i].text = text;
       }
+      db.saveNote(notes);
     }
     notifyListeners();
   }
@@ -35,6 +44,8 @@ class NoteData extends ChangeNotifier {
 //delete note
   void deleteNote(Note note) {
     notes.remove(note);
+    db.saveNote(notes);
+
     notifyListeners();
   }
 }

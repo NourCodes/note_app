@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_app/data/hive_Db.dart';
 import 'package:note_app/models/note_data.dart';
 import 'package:provider/provider.dart';
 
@@ -41,12 +42,12 @@ class _EditingPageState extends State<EditingPage> {
 
   // Update an existing note
   void updateNote() {
-    // Get text from the editor
     String title = _titleController.text;
     String text = _controller.text;
     Provider.of<NoteData>(context, listen: false)
         .updateNote(widget.note, text, title);
   }
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -55,25 +56,20 @@ class _EditingPageState extends State<EditingPage> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Your Note'),
           actions: [
             IconButton(
-              icon: const Icon(Icons.save),
-              onPressed: () {
-                if (_formKey.currentState!.validate()){
-                  // Save or update the note when the save button is pressed
-                  if (widget.isNew &&
-                      _controller.text.isNotEmpty) {
-                    addNewNote();
-                  } else {
-                    updateNote();
+                icon: const Icon(Icons.save),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Save or update the note when the save button is pressed
+                    if (widget.isNew && _controller.text.isNotEmpty) {
+                      addNewNote();
+                    } else {
+                      updateNote();
+                    }
+                    Navigator.pop(context);
                   }
-                  // Optionally, navigate back or perform other actions
-                  Navigator.pop(context);
-                }
-
-              }
-            ),
+                }),
           ],
         ),
         body: Padding(
@@ -87,6 +83,12 @@ class _EditingPageState extends State<EditingPage> {
                     enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       borderSide: BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
                     ),
                     hintText: "Title",
                     hintStyle: TextStyle(
@@ -104,21 +106,28 @@ class _EditingPageState extends State<EditingPage> {
                 Expanded(
                   child: TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty){
+                      if (value!.isEmpty) {
                         return "Please enter your note";
                       }
                     },
                     decoration: InputDecoration(
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                         ),
                         hintText: "....",
                         hintStyle: TextStyle(color: Colors.grey.shade400)),
 
                     controller: _controller,
                     maxLines: 10, // Allow multiple lines
-                    keyboardType: TextInputType.multiline,
                   ),
                 ),
               ],

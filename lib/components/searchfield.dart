@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+  Function (String text) onSearch;
+  TextEditingController searchController;
+   Search({Key? key, required this.searchController, required this.onSearch}) : super(key: key);
 
   @override
   State<Search> createState() => _SearchState();
@@ -11,6 +13,8 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.searchController,
+      onChanged:  widget.onSearch,
       style: const TextStyle(
         color: Colors.white,
         fontSize: 16,
